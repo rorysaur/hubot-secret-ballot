@@ -1,6 +1,6 @@
 {
   "name": "hubot-secret-ballot",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A script that allows users to create polls and vote on them by private messaging hubot",
   "main": "index.coffee",
   "repository": {
