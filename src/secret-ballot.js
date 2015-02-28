@@ -47,14 +47,17 @@ module.exports = function(robot) {
   var printPoll = function(poll, msg, showScores) {
     msg.send(poll.id + '. ' + poll.question + ' (created by ' + poll.author + ')');
     msg.send('options:');
+    var optionsStr = '';
     poll.options.forEach(function(option, idx) {
       var label = String.fromCharCode(idx + 97); // map option idx to alpha letters
       var optionStr = label + '. ' + option.name;
       if (showScores) {
         optionStr += ' (' + option.score + ')';
       }
-      msg.send(optionStr);
+      optionsStr += optionStr;
+      optionsStr += '\n';
     });
+    msg.send(optionsStr);
     msg.send('To vote on this poll, private message me `poll vote [poll number] [option letter]`, e.g., `poll vote 1 a`. To see results for this poll, say `poll results [poll number]`.');
   };
 
@@ -110,11 +113,15 @@ module.exports = function(robot) {
       if (typeof poll === 'object') {
         msg.send(poll.question + ' (created by ' + author + ')');
         msg.send('options:');
+        var optionsStr = '';
         if (poll.options && poll.options.length > 0) {
           poll.options.forEach(function(option, idx) {
             var label = String.fromCharCode(idx + 97);
-            msg.send(label + '. ' + option.name);
+            var optionStr = label + '. ' + option.name;
+            optionsStr += optionStr;
+            optionsStr += '\n';
           });
+          msg.send(optionsStr);
         } else {
           msg.send('No options yet.');
         }
@@ -155,12 +162,17 @@ module.exports = function(robot) {
   robot.respond(/poll list/i, function(msg) {
     var polls = robot.brain.get('polls') || [];
     msg.send('Current polls:');
-    polls.forEach(function(poll) {
-      msg.send(poll.id + '. ' + poll.question);
-    });
-    msg.send('To show options for a single poll, say `poll show [number]`.');
     if (polls.length === 0) {
       msg.send('No current polls.');
+    } else {
+      var pollsStr = '';
+      polls.forEach(function(poll) {
+        var pollStr = poll.id + '. ' + poll.question;
+        pollsStr += pollStr;
+        pollsStr += '\n';
+      });
+      msg.send(pollsStr);
+      msg.send('To show options for a single poll, say `poll show [number]`.');
     }
   });
 
